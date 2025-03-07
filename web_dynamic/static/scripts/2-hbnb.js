@@ -13,11 +13,25 @@ $(document).ready(function () {
     }
     $(".amenities h4").text(listAmenitiesChecked.join(", "));
   });
-  $.get('http://0.0.0.0:5001/api/v1/status/', function(data) {
-    if(data.status === 'OK') {
-      $('#api_status').addClass('available');
-    } else {
-      $('#api_status').removeClass('available');
-    }
-  });
+  checkStatus();
 });
+
+function checkStatus() {
+  $.get("http://127.0.0.1:5001/api/v1/status")
+    .done(function (data) {
+      if (data.status === "OK") {
+        $("#api_status").addClass("available");
+      } else {
+        $("#api_status").removeClass("available");
+      }
+    })
+    .fail(function (xhr, status, error) {
+      console.error("connection error: ", status, error);
+      $("#api_status").removeClass("available");
+      if (status === "error") {
+        console.log(
+          "Cannot connect to the API server, please check if it is running"
+        );
+      }
+    });
+}
