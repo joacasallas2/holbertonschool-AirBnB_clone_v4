@@ -124,6 +124,7 @@ def places_search():
     Retrieves all Place objects depending of the JSON in the body
     of the request
     """
+
     if request.get_json() is None:
         abort(400, description="Not a JSON")
 
@@ -139,7 +140,6 @@ def places_search():
             not cities and
             not amenities):
         places = storage.all(Place).values()
-        print("all places in storage: ", places)
         list_places = []
         for place in places:
             list_places.append(place.to_dict())
