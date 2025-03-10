@@ -55,6 +55,7 @@ function places(filters = {}) {
     success: function (places) {
       $(".places").empty();
       for (const place of places) {
+        console.log(place);
         const placeHtml = `
           <article>
             <div class="title_box">
@@ -77,8 +78,8 @@ function places(filters = {}) {
               </div>
             </div>
             <div class="user">
-              <b>Owner:</b> ${place.user?.first_name ?? "undefined"} ${
-          place.user?.last_name ?? "undefined"
+              <b>Owner:</b> ${place.user_first_name ?? "undefined"} ${
+          place.user_last_name ?? "undefined"
         }
             </div>
             <div class="description">${place.description}</div>
