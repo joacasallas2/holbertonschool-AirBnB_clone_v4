@@ -179,6 +179,9 @@ def places_search():
     for p in list_places:
         d = p.to_dict()
         d.pop('amenities', None)
+        user = storage.get(User, p.user_id)
+        d["user_first_name"] = user.first_name
+        d["user_last_name"] = user.last_name
         places.append(d)
 
     return jsonify(places)
