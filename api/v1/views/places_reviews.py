@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul API actions for Reviews """
+from datetime import datetime
 from models.review import Review
 from models.place import Place
 from models.user import User
@@ -21,7 +22,15 @@ def get_reviews(place_id):
     if not place:
         abort(404)
 
-    reviews = [review.to_dict() for review in place.reviews]
+    reviews = []
+    for review in place.reviews:
+        review_dict = review.to_dict()
+        user = storage.get(User, review.user_id)
+        review_dict["user_first_name"] = user.first_name
+        review_dict["user_last_name"] = user.last_name
+        created_at = review_dict["created_at"]
+        review_dict["created_at"] = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%S.%f").strftime("%B %d, %Y")
+        reviews.append(review_dict)
 
     return jsonify(reviews)
 
@@ -88,7 +97,10 @@ def post_review(place_id):
     data['place_id'] = place_id
     instance = Review(**data)
     instance.save()
-    return make_response(jsonify(instance.to_dict()), 201)
+    instance_dict = instance.to_dict()
+    instance_dict["user_first_name"] = user.first_name
+    instance_dict["user_last_name"] = user.last_name
+    return make_response(jsonify(instance_dict), 201)
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
